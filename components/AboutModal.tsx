@@ -1,0 +1,62 @@
+import React, { useEffect } from 'react';
+import XIcon from './icons/XIcon';
+import HeartIcon from './icons/HeartIcon';
+
+interface AboutModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+const AboutModal: React.FC<AboutModalProps> = ({ isOpen, onClose }) => {
+  useEffect(() => {
+    const handleEsc = (event: KeyboardEvent) => {
+       if (event.key === 'Escape') onClose();
+    };
+    window.addEventListener('keydown', handleEsc);
+    return () => window.removeEventListener('keydown', handleEsc);
+  }, [onClose]);
+
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fade-in" onClick={onClose}>
+        <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] flex flex-col animate-scale-up relative" onClick={e => e.stopPropagation()}>
+            <header className="p-4 border-b border-slate-200 dark:border-slate-700 flex justify-between items-center shrink-0">
+                <h2 className="text-lg font-bold font-lalezar text-slate-800 dark:text-slate-100">داستان CSS CLASS</h2>
+                <button onClick={onClose} className="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
+                    <XIcon className="w-5 h-5 text-slate-500" />
+                </button>
+            </header>
+            
+            <main className="p-6 flex-grow overflow-y-auto no-scrollbar text-slate-600 dark:text-slate-300 leading-relaxed space-y-4">
+                <p>
+                    اینجا جایی است که کدنویسی با هنر ملاقات می‌کند. <strong>CSS CLASS</strong> در سال <strong>۱۴۰۴</strong> با یک هدف متولد شد: ساده‌سازی فرآیند پیچیده طراحی وب و توانمندسازی توسعه‌دهندگان فرانت‌اند، از تازه‌کاران تا حرفه‌ای‌ها، برای خلق تجربیات کاربری بی‌نظیر.
+                </p>
+                
+                <div className="p-4 bg-slate-50 dark:bg-slate-900/50 rounded-lg border border-slate-200 dark:border-slate-700">
+                    <p className="font-semibold text-slate-800 dark:text-slate-100">یادداشتی از بنیان‌گذار</p>
+                    <blockquote className="mt-2 pr-4 border-r-4 border-indigo-500 text-slate-500 dark:text-slate-400">
+                        "من، <strong>نگار کاظم نژاد</strong>، به عنوان بنیان‌گذار این پلتفرم، همیشه به دنبال راهی برای پر کردن شکاف بین ایده‌های خلاقانه و اجرای فنی آن‌ها بوده‌ام. CSS CLASS حاصل این دغدغه است؛ جعبه ابزاری که به شما کمک می‌کند تا به جای درگیر شدن با پیچیدگی‌های سینتکس، بر روی جادوی طراحی تمرکز کنید. امیدوارم این ابزار در مسیر حرفه‌ای شما، همراهی خلاق و کارآمد باشد."
+                    </blockquote>
+                </div>
+
+                <p>
+                    این مسیر ادامه دارد و با همراهی و حمایت شما، کامل‌تر خواهد شد.
+                </p>
+
+            </main>
+             <footer className="p-4 border-t border-slate-200 dark:border-slate-700 shrink-0 text-center text-xs text-slate-500 dark:text-slate-400">
+                ساخته شده با <HeartIcon className="w-3 h-3 inline text-red-500" /> و هوش مصنوعی
+            </footer>
+        </div>
+        <style>{`
+          @keyframes fade-in { 0% { opacity: 0; } 100% { opacity: 1; } }
+          @keyframes scale-up { 0% { opacity: 0; transform: scale(0.95); } 100% { opacity: 1; transform: scale(1); } }
+          .animate-fade-in { animation: fade-in 0.2s ease-out; }
+          .animate-scale-up { animation: scale-up 0.2s ease-out; }
+        `}</style>
+    </div>
+  );
+};
+
+export default AboutModal;
