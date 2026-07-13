@@ -57,6 +57,7 @@ import DonationModal from './components/DonationModal';
 import AboutModal from './components/AboutModal';
 import Footer from './components/Footer';
 import Welcome from './components/Welcome';
+import { toolCategories } from './data/tools';
 
 const App: React.FC = () => {
   const [theme, setTheme] = useState<'light' | 'dark'>('dark');
@@ -64,6 +65,24 @@ const App: React.FC = () => {
   const [isDonationModalOpen, setIsDonationModalOpen] = useState(false);
   const [isAboutModalOpen, setIsAboutModalOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+
+  // Find current tool and its category
+  let currentCategoryName = '';
+  let currentToolName = '';
+
+  if (activeToolId === 'welcome') {
+    currentCategoryName = 'خانه';
+    currentToolName = 'صفحه اصلی';
+  } else {
+    for (const cat of toolCategories) {
+      const tool = cat.tools.find(t => t.id === activeToolId);
+      if (tool) {
+        currentCategoryName = cat.name;
+        currentToolName = tool.name;
+        break;
+      }
+    }
+  }
 
   useEffect(() => {
     const root = window.document.documentElement;
@@ -219,7 +238,40 @@ const App: React.FC = () => {
       <div className="flex-grow flex flex-row min-h-0 overflow-hidden">
         <Sidebar isOpen={isSidebarOpen} activeToolId={activeToolId} onSelectTool={handleSelectTool} />
         <main className="flex-grow flex flex-col min-w-0 overflow-y-auto no-scrollbar">
-          <div key={activeToolId} className="h-full w-full flex flex-col animate__animated animate__fadeIn animate__faster">
+          {/* Breadcrumb Navigation */}
+          <div className="bg-white dark:bg-slate-900 border-b border-slate-200/80 dark:border-slate-800/60 px-6 py-3 flex items-center justify-between text-xs md:text-sm text-slate-500 dark:text-slate-400 font-sans shadow-xs shrink-0" dir="rtl">
+            <div className="flex items-center gap-2">
+              <button 
+                onClick={() => handleSelectTool('welcome')}
+                className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors font-semibold flex items-center gap-1 cursor-pointer"
+              >
+                <span>خانه</span>
+              </button>
+              {currentCategoryName && currentCategoryName !== 'خانه' && (
+                <>
+                  <span className="text-slate-300 dark:text-slate-700 font-normal">/</span>
+                  <span className="text-slate-400 dark:text-slate-500">
+                    {currentCategoryName}
+                  </span>
+                </>
+              )}
+              {currentToolName && currentToolName !== 'صفحه اصلی' && (
+                <>
+                  <span className="text-slate-300 dark:text-slate-700 font-normal">/</span>
+                  <span className="text-indigo-600 dark:text-indigo-400 font-bold">
+                    {currentToolName}
+                  </span>
+                </>
+              )}
+            </div>
+            
+            <div className="hidden sm:flex items-center gap-1 bg-slate-100 dark:bg-slate-800/60 px-2.5 py-1 rounded-md text-[10px] font-mono text-slate-400 dark:text-slate-500">
+              <span className="font-sans">شناسه:</span>
+              <span className="text-slate-600 dark:text-slate-300 font-semibold">{activeToolId}</span>
+            </div>
+          </div>
+
+          <div key={activeToolId} className="flex-grow w-full flex flex-col animate__animated animate__fadeIn animate__faster">
             {renderActiveTool()}
           </div>
         </main>
