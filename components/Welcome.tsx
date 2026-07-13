@@ -9,9 +9,17 @@ import XIcon from './icons/XIcon';
 
 interface WelcomeProps {
   onSelectTool?: (toolId: string) => void;
+  favorites?: string[];
+  toggleFavorite?: (toolId: string) => void;
+  recentTools?: string[];
 }
 
-const Welcome: React.FC<WelcomeProps> = ({ onSelectTool }) => {
+const Welcome: React.FC<WelcomeProps> = ({ 
+  onSelectTool, 
+  favorites = [], 
+  toggleFavorite, 
+  recentTools = [] 
+}) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeTab, setActiveTab] = useState<string>('all');
 
@@ -19,6 +27,12 @@ const Welcome: React.FC<WelcomeProps> = ({ onSelectTool }) => {
   const allTools = toolCategories.flatMap(cat => 
     cat.name !== 'خانه' ? cat.tools.map(t => ({ ...t, categoryName: cat.name })) : []
   );
+
+  // Favorite and Recent lists
+  const favoriteToolsList = allTools.filter(tool => favorites.includes(tool.id));
+  const recentToolsList = recentTools
+    .map(id => allTools.find(t => t.id === id))
+    .filter((t): t is (Tool & { categoryName: string }) => !!t);
 
   // Filter tools based on search query and active tab
   const filteredTools = allTools.filter(tool => {
@@ -88,6 +102,99 @@ const Welcome: React.FC<WelcomeProps> = ({ onSelectTool }) => {
           </div>
         </div>
 
+        {/* Personalized Workspace (میز کار شخصی) */}
+        {!isSearching && (favoriteToolsList.length > 0 || recentToolsList.length > 0) && (
+          <div className="max-w-5xl mx-auto mb-10 grid grid-cols-1 md:grid-cols-2 gap-6 px-4">
+            
+            {/* Recent Tools */}
+            {recentToolsList.length > 0 ? (
+              <div className="bg-white dark:bg-slate-800/40 border border-slate-200/80 dark:border-slate-800 rounded-2xl p-5 shadow-xs">
+                <h3 className="font-bold text-base text-slate-800 dark:text-slate-100 flex items-center gap-2 mb-3 pb-2 border-b border-slate-100 dark:border-slate-800/80">
+                  <span className="text-lg">⏱️</span>
+                  <span>آخرین ابزارهای استفاده شده</span>
+                </h3>
+                <div className="space-y-1.5">
+                  {recentToolsList.slice(0, 4).map((tool) => (
+                    <div 
+                      key={`recent-welcome-${tool.id}`}
+                      className="flex items-center justify-between p-2.5 rounded-xl border border-slate-100 dark:border-slate-800/50 bg-slate-50/50 dark:bg-slate-800/20 hover:bg-indigo-50/30 dark:hover:bg-slate-800/60 hover:border-indigo-100 dark:hover:border-indigo-950 transition-all cursor-pointer group"
+                      onClick={() => handleToolClick(tool.id)}
+                    >
+                      <div className="flex flex-col min-w-0">
+                        <span className="font-semibold text-xs md:text-sm text-slate-700 dark:text-slate-200 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors truncate">
+                          {tool.name}
+                        </span>
+                        <span className="text-[10px] text-slate-400 dark:text-slate-500 mt-0.5 truncate">
+                          {tool.categoryName}
+                        </span>
+                      </div>
+                      <span className="text-xs text-indigo-500 dark:text-indigo-400 opacity-0 group-hover:opacity-100 transition-all translate-x-1 group-hover:translate-x-0 font-semibold pl-1 shrink-0">
+                        باز کردن ←
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ) : (
+              <div className="bg-white dark:bg-slate-800/40 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-xs flex flex-col items-center justify-center text-center text-slate-400 dark:text-slate-500 py-10">
+                <span className="text-3xl mb-2">⏱️</span>
+                <p className="text-sm font-semibold">هنوز ابزاری را باز نکرده‌اید.</p>
+                <p className="text-xs text-slate-400 mt-1">با باز کردن ابزارها، آنها در این بخش ذخیره می‌شوند.</p>
+              </div>
+            )}
+
+            {/* Favorite / Bookmarked Tools */}
+            {favoriteToolsList.length > 0 ? (
+              <div className="bg-white dark:bg-slate-800/40 border border-slate-200/80 dark:border-slate-800 rounded-2xl p-5 shadow-xs">
+                <h3 className="font-bold text-base text-slate-800 dark:text-slate-100 flex items-center gap-2 mb-3 pb-2 border-b border-slate-100 dark:border-slate-800/80">
+                  <span className="text-lg text-amber-500">★</span>
+                  <span>ابزارهای نشان‌شده شما</span>
+                </h3>
+                <div className="space-y-1.5">
+                  {favoriteToolsList.map((tool) => (
+                    <div 
+                      key={`fav-welcome-${tool.id}`}
+                      className="flex items-center justify-between p-2.5 rounded-xl border border-slate-100 dark:border-slate-800/50 bg-slate-50/50 dark:bg-slate-800/20 hover:bg-amber-50/20 dark:hover:bg-slate-800/60 hover:border-amber-100 dark:hover:border-amber-950 transition-all cursor-pointer group"
+                      onClick={() => handleToolClick(tool.id)}
+                    >
+                      <div className="flex flex-col min-w-0">
+                        <span className="font-semibold text-xs md:text-sm text-slate-700 dark:text-slate-200 group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors truncate">
+                          {tool.name}
+                        </span>
+                        <span className="text-[10px] text-slate-400 dark:text-slate-500 mt-0.5 truncate">
+                          {tool.categoryName}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2 shrink-0">
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            if (toggleFavorite) toggleFavorite(tool.id);
+                          }}
+                          className="px-2 py-1 text-slate-400 hover:text-rose-500 transition-colors text-[10px] cursor-pointer bg-white dark:bg-slate-850 border border-slate-200 dark:border-slate-700 rounded shadow-xs"
+                          title="حذف نشان"
+                        >
+                          ✕ حذف
+                        </button>
+                        <span className="text-xs text-amber-500 dark:text-amber-400 opacity-0 group-hover:opacity-100 transition-all translate-x-1 group-hover:translate-x-0 font-semibold pl-1">
+                          باز کردن ←
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ) : (
+              <div className="bg-white dark:bg-slate-800/40 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-xs flex flex-col items-center justify-center text-center text-slate-400 dark:text-slate-500 py-10">
+                <span className="text-2xl text-amber-400 mb-2">☆</span>
+                <p className="text-sm font-semibold">هیچ ابزاری نشان نشده است.</p>
+                <p className="text-xs text-slate-400 mt-1">با زدن دکمه «نشان کردن» در بالای هر ابزار، آن را به این بخش بیفزایید.</p>
+              </div>
+            )}
+
+          </div>
+        )}
+
         {/* Search Results / Full Tool Directory */}
         {(isSearching || searchQuery === '') && (
           <div className="max-w-5xl mx-auto mb-12 bg-white dark:bg-slate-800/40 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm">
@@ -142,23 +249,43 @@ const Welcome: React.FC<WelcomeProps> = ({ onSelectTool }) => {
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                 {filteredTools.map((tool) => (
-                  <button
+                  <div
                     key={tool.id}
                     onClick={() => handleToolClick(tool.id)}
-                    className="flex items-center justify-between p-3 rounded-xl border border-slate-200/60 dark:border-slate-800/80 bg-white/50 dark:bg-slate-800/30 hover:bg-indigo-50/50 dark:hover:bg-slate-800/80 hover:border-indigo-400/50 dark:hover:border-indigo-500/30 transition-all text-right group"
+                    className="flex items-center justify-between p-3 rounded-xl border border-slate-200/60 dark:border-slate-800/80 bg-white/50 dark:bg-slate-800/30 hover:bg-indigo-50/50 dark:hover:bg-slate-800/80 hover:border-indigo-400/50 dark:hover:border-indigo-500/30 transition-all text-right group cursor-pointer relative"
                   >
-                    <div className="flex flex-col">
-                      <span className="font-semibold text-sm text-slate-700 dark:text-slate-200 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+                    <div className="flex flex-col min-w-0">
+                      <span className="font-semibold text-sm text-slate-700 dark:text-slate-200 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors truncate">
                         {tool.name}
                       </span>
-                      <span className="text-[10px] text-slate-400 dark:text-slate-500 mt-1">
+                      <span className="text-[10px] text-slate-400 dark:text-slate-500 mt-1 truncate">
                         {tool.categoryName}
                       </span>
                     </div>
-                    <span className="text-xs text-indigo-500 dark:text-indigo-400 opacity-0 group-hover:opacity-100 transition-opacity translate-x-1 group-hover:translate-x-0 transform duration-150 pl-1 font-semibold">
-                      ← شروع
-                    </span>
-                  </button>
+                    
+                    <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
+                      {/* Favorite star */}
+                      <button
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          if (toggleFavorite) toggleFavorite(tool.id);
+                        }}
+                        className={`p-1 text-sm rounded-md transition-all cursor-pointer ${
+                          favorites.includes(tool.id)
+                            ? 'text-amber-500 hover:text-slate-400 scale-110'
+                            : 'text-slate-300 dark:text-slate-600 hover:text-amber-500 dark:hover:text-amber-400 hover:scale-110'
+                        }`}
+                        title={favorites.includes(tool.id) ? "حذف نشان" : "نشان کردن"}
+                      >
+                        {favorites.includes(tool.id) ? '★' : '☆'}
+                      </button>
+
+                      <span className="text-xs text-indigo-500 dark:text-indigo-400 opacity-0 group-hover:opacity-100 transition-opacity translate-x-1 group-hover:translate-x-0 transform duration-150 pl-1 font-semibold shrink-0">
+                        ← شروع
+                      </span>
+                    </div>
+                  </div>
                 ))}
               </div>
             )}

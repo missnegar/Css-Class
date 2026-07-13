@@ -66,6 +66,46 @@ const App: React.FC = () => {
   const [isAboutModalOpen, setIsAboutModalOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
+  // Favorites (Bookmarks) State
+  const [favorites, setFavorites] = useState<string[]>(() => {
+    try {
+      const stored = localStorage.getItem('css-class-favorites');
+      return stored ? JSON.parse(stored) : [];
+    } catch {
+      return [];
+    }
+  });
+
+  // Recent Tools State
+  const [recentTools, setRecentTools] = useState<string[]>(() => {
+    try {
+      const stored = localStorage.getItem('css-class-recent');
+      return stored ? JSON.parse(stored) : [];
+    } catch {
+      return [];
+    }
+  });
+
+  // Sync Favorites to LocalStorage
+  useEffect(() => {
+    localStorage.setItem('css-class-favorites', JSON.stringify(favorites));
+  }, [favorites]);
+
+  // Sync Recent Tools to LocalStorage
+  useEffect(() => {
+    localStorage.setItem('css-class-recent', JSON.stringify(recentTools));
+  }, [recentTools]);
+
+  const toggleFavorite = (toolId: string) => {
+    setFavorites(prev => {
+      if (prev.includes(toolId)) {
+        return prev.filter(id => id !== toolId);
+      } else {
+        return [...prev, toolId];
+      }
+    });
+  };
+
   // Find current tool and its category
   let currentCategoryName = '';
   let currentToolName = '';
@@ -103,12 +143,25 @@ const App: React.FC = () => {
 
   const handleSelectTool = (toolId: string) => {
     setActiveToolId(toolId);
+    if (toolId && toolId !== 'welcome') {
+      setRecentTools(prev => {
+        const filtered = prev.filter(id => id !== toolId);
+        return [toolId, ...filtered].slice(0, 5); // Keep last 5 tools
+      });
+    }
   };
 
   const renderActiveTool = () => {
     switch (activeToolId) {
       case 'welcome':
-        return <Welcome onSelectTool={handleSelectTool} />;
+        return (
+          <Welcome 
+            onSelectTool={handleSelectTool} 
+            favorites={favorites}
+            toggleFavorite={toggleFavorite}
+            recentTools={recentTools}
+          />
+        );
       case 'shape-former':
         return <ShapeEditor />;
       case 'animated-text-generator':
@@ -236,7 +289,13 @@ const App: React.FC = () => {
         onToggleSidebar={toggleSidebar}
       />
       <div className="flex-grow flex flex-row min-h-0 overflow-hidden">
-        <Sidebar isOpen={isSidebarOpen} activeToolId={activeToolId} onSelectTool={handleSelectTool} />
+        <Sidebar 
+          isOpen={isSidebarOpen} 
+          activeToolId={activeToolId} 
+          onSelectTool={handleSelectTool} 
+          favorites={favorites}
+          toggleFavorite={toggleFavorite}
+        />
         <main className="flex-grow flex flex-col min-w-0 overflow-y-auto no-scrollbar">
           {/* Breadcrumb Navigation */}
           <div className="bg-white dark:bg-slate-900 border-b border-slate-200/80 dark:border-slate-800/60 px-6 py-3 flex items-center justify-between text-xs md:text-sm text-slate-500 dark:text-slate-400 font-sans shadow-xs shrink-0" dir="rtl">
@@ -258,8 +317,20 @@ const App: React.FC = () => {
               {currentToolName && currentToolName !== 'صفحه اصلی' && (
                 <>
                   <span className="text-slate-300 dark:text-slate-700 font-normal">/</span>
-                  <span className="text-indigo-600 dark:text-indigo-400 font-bold">
-                    {currentToolName}
+                  <span className="text-indigo-600 dark:text-indigo-400 font-bold flex items-center gap-2">
+                    <span>{currentToolName}</span>
+                    <button
+                      onClick={() => toggleFavorite(activeToolId)}
+                      title={favorites.includes(activeToolId) ? "حذف از نشان‌شده‌ها" : "افزودن به نشان‌شده‌ها"}
+                      className={`px-2 py-0.5 rounded text-[11px] font-sans flex items-center gap-1 transition-all cursor-pointer ${
+                        favorites.includes(activeToolId)
+                          ? 'bg-amber-100 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400 border border-amber-200 dark:border-amber-800/60 font-semibold'
+                          : 'bg-slate-100 dark:bg-slate-800 text-slate-400 hover:text-amber-500 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-200/50 dark:border-slate-700/50'
+                      }`}
+                    >
+                      <span>{favorites.includes(activeToolId) ? '★' : '☆'}</span>
+                      <span>{favorites.includes(activeToolId) ? 'نشان‌شده' : 'نشان کردن'}</span>
+                    </button>
                   </span>
                 </>
               )}

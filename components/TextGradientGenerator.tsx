@@ -57,6 +57,7 @@ const TextGradientGenerator: React.FC = () => {
         background: generatedGradient,
         WebkitBackgroundClip: 'text',
         backgroundClip: 'text',
+        WebkitTextFillColor: 'transparent',
         color: 'transparent',
     };
 
@@ -65,6 +66,7 @@ const TextGradientGenerator: React.FC = () => {
   background: ${generatedGradient};
   -webkit-background-clip: text;
   background-clip: text;
+  -webkit-text-fill-color: transparent;
   color: transparent;
   /* Additional font styles */
   font-family: '${fontFamily}', sans-serif;
@@ -107,7 +109,7 @@ const TextGradientGenerator: React.FC = () => {
         <div className="h-full flex flex-col bg-slate-50 dark:bg-slate-900">
             <main className="flex-1 flex min-h-0">
                 <ResizablePanels>
-                    <div className="flex-1 p-4 md:p-8 flex items-center justify-center transition-colors" style={{backgroundColor: bgColor}}>
+                    <div className="h-full w-full p-4 md:p-8 flex items-center justify-center transition-colors overflow-auto" style={{backgroundColor: bgColor}}>
                         <h1 style={previewStyle} className="text-center break-words">{text}</h1>
                     </div>
                     <aside className="w-full bg-white dark:bg-slate-800/50 border-t md:border-l md:border-t-0 border-slate-200 dark:border-slate-800 p-6 overflow-y-auto no-scrollbar">

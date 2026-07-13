@@ -85,7 +85,6 @@ const RibbonBannerGenerator: React.FC = () => {
     };
 
     const { previewStyle, cssCode, htmlCode } = useMemo(() => {
-        const darkerBg = darkenColor(bgColor, 20);
         let baseStyle: React.CSSProperties = {
             height: `${height}px`,
             lineHeight: `${height}px`,
@@ -96,7 +95,7 @@ const RibbonBannerGenerator: React.FC = () => {
             position: 'relative',
             display: 'inline-block',
             textAlign: 'center',
-            padding: `0 ${height / 2}px`,
+            padding: style === 'straight' ? `0 ${height / 3}px` : `0 ${height * 0.6}px`,
             boxSizing: 'border-box',
         };
 
@@ -109,15 +108,19 @@ const RibbonBannerGenerator: React.FC = () => {
             baseStyle.lineHeight = `${height - borderWidth * 2}px`;
         }
 
-        const pseudoStyle = {
-            '--h': `${height}px`,
-            '--h-half': `${height/2}px`,
-            '--border-w': `${borderWidth}px`,
-            '--darker-bg': darkerBg,
-            '--tail-width': `${height * 0.4}px`,
-            '--border-color': borderColor,
-            '--bg-color': bgColor,
-        } as React.CSSProperties;
+        let clipPathVal = '';
+        if (style === 'fork') {
+            // Swallowtail hollow cut-out at both ends
+            clipPathVal = `polygon(0% 0%, ${height * 0.3}px 50%, 0% 100%, 100% 100%, calc(100% - ${height * 0.3}px) 50%, 100% 0%)`;
+        } else if (style === 'angle') {
+            // Elegant Slanted parallel ribbon
+            clipPathVal = `polygon(${height * 0.3}px 0%, 100% 0%, calc(100% - ${height * 0.3}px) 100%, 0% 100%)`;
+        }
+
+        if (clipPathVal) {
+            baseStyle.clipPath = clipPathVal;
+            baseStyle.WebkitClipPath = clipPathVal;
+        }
 
         const html = `<div class="ribbon-banner"><span>${text}</span></div>`;
 
@@ -129,13 +132,14 @@ const RibbonBannerGenerator: React.FC = () => {
   height: ${height}px;
   line-height: ${hasBorder ? height - borderWidth * 2 : height}px;
   text-align: center;
-  padding: 0 ${height / 2}px;
+  padding: ${style === 'straight' ? `0 ${Math.round(height / 3)}px` : `0 ${Math.round(height * 0.6)}px`};
   background-color: ${bgColor};
   color: ${textColor};
   font-family: '${fontFamily}', sans-serif;
   font-size: ${fontSize}px;
   ${widthMode === 'fixed' ? `width: ${width}px;` : ''}
   ${hasBorder ? `border: ${borderWidth}px solid ${borderColor};` : ''}
+  ${clipPathVal ? `-webkit-clip-path: ${clipPathVal};\n  clip-path: ${clipPathVal};` : ''}
 }
 
 .ribbon-banner span {
@@ -144,46 +148,7 @@ const RibbonBannerGenerator: React.FC = () => {
 }
         `;
 
-        const beforeAfterBase = `
-  content: '';
-  position: absolute;
-  top: 0;
-  border-style: solid;
-  z-index: 0;`;
-
-        if (style === 'angle') {
-            css += `
-.ribbon-banner::before {${beforeAfterBase}
-  left: -${height * 0.5}px;
-  border-width: ${height / 2}px;
-  border-color: ${darkerBg};
-  border-left-color: transparent;
-}
-.ribbon-banner::after {${beforeAfterBase}
-  right: -${height * 0.5}px;
-  border-width: ${height / 2}px;
-  border-color: ${darkerBg};
-  border-right-color: transparent;
-}`;
-        } else if (style === 'fork') {
-            css += `
-.ribbon-banner {
-  padding: 0 ${height * 0.75}px;
-}
-.ribbon-banner::before {${beforeAfterBase}
-  left: ${height * 0.25}px;
-  border-width: ${height / 2}px 0 ${height / 2}px ${height * 0.5}px;
-  border-color: transparent transparent transparent ${darkerBg};
-}
-.ribbon-banner::after {${beforeAfterBase}
-  right: ${height * 0.25}px;
-  border-width: ${height / 2}px ${height * 0.5}px ${height / 2}px 0;
-  border-color: transparent ${darkerBg} transparent transparent;
-}`;
-        }
-
-
-        return { previewStyle: {...baseStyle, ...pseudoStyle}, cssCode: css.trim(), htmlCode: html };
+        return { previewStyle: baseStyle, cssCode: css.trim(), htmlCode: html };
 
     }, [text, style, height, width, widthMode, bgColor, textColor, hasBorder, borderWidth, borderColor, fontSize, fontFamily]);
 
@@ -216,10 +181,10 @@ const RibbonBannerGenerator: React.FC = () => {
                                 <label className="block text-sm font-medium">متن بنر<input type="text" value={text} onChange={(e) => setText(e.target.value)} className="w-full p-2 mt-1 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-md" /></label>
                                 <div className="mt-4">
                                      <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">استایل انتها</label>
-                                     <div className="flex gap-2 text-sm">
-                                         <button onClick={() => setStyle('fork')} className={`flex-1 p-2 rounded-md ${style === 'fork' ? 'bg-indigo-600 text-white shadow' : 'bg-slate-200 dark:bg-slate-700'}`}>دالبور</button>
-                                         <button onClick={() => setStyle('angle')} className={`flex-1 p-2 rounded-md ${style === 'angle' ? 'bg-indigo-600 text-white shadow' : 'bg-slate-200 dark:bg-slate-700'}`}>زاویه‌دار</button>
-                                         <button onClick={() => setStyle('straight')} className={`flex-1 p-2 rounded-md ${style === 'straight' ? 'bg-indigo-600 text-white shadow' : 'bg-slate-200 dark:bg-slate-700'}`}>صاف</button>
+                                     <div className="flex gap-1 text-sm bg-slate-100 dark:bg-slate-900 p-1 rounded-xl">
+                                         <button type="button" onClick={() => setStyle('fork')} className={`flex-1 py-2 px-3 rounded-lg font-medium text-xs transition-all cursor-pointer ${style === 'fork' ? 'bg-indigo-600 text-white shadow font-bold' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-200/50 dark:hover:bg-slate-800/50'}`}>دم‌چلچله‌ای</button>
+                                         <button type="button" onClick={() => setStyle('angle')} className={`flex-1 py-2 px-3 rounded-lg font-medium text-xs transition-all cursor-pointer ${style === 'angle' ? 'bg-indigo-600 text-white shadow font-bold' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-200/50 dark:hover:bg-slate-800/50'}`}>مورب شیک</button>
+                                         <button type="button" onClick={() => setStyle('straight')} className={`flex-1 py-2 px-3 rounded-lg font-medium text-xs transition-all cursor-pointer ${style === 'straight' ? 'bg-indigo-600 text-white shadow font-bold' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-200/50 dark:hover:bg-slate-800/50'}`}>صاف</button>
                                      </div>
                                 </div>
                                 <div className="mt-4">

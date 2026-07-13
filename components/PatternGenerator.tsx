@@ -193,17 +193,28 @@ const PatternGenerator: React.FC = () => {
     return (
         <div className="h-full flex flex-col bg-slate-50 dark:bg-slate-900">
             {isFullscreen && (
-                <div className="fixed inset-0 z-50" style={backgroundValue}>
-                    <button onClick={() => setIsFullscreen(false)} className="absolute top-4 right-4 p-3 bg-white/20 hover:bg-white/40 rounded-full text-white backdrop-blur-sm transition-colors">
+                <div 
+                    className="fixed inset-0 z-50 cursor-zoom-out" 
+                    style={backgroundValue}
+                    onClick={() => setIsFullscreen(false)}
+                >
+                    <button 
+                        type="button"
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            setIsFullscreen(false);
+                        }} 
+                        className="absolute top-4 right-4 p-3 bg-black/40 hover:bg-black/60 rounded-full text-white backdrop-blur-md transition-all cursor-pointer shadow-lg hover:scale-105"
+                    >
                         <XIcon className="w-6 h-6" />
                     </button>
                 </div>
             )}
             <div className="flex-1 flex min-h-0">
                 <ResizablePanels>
-                    <div className="flex-1 p-4 md:p-8 flex items-center justify-center bg-slate-100/50 dark:bg-slate-900/50 relative">
-                        <div className="w-full h-full rounded-lg shadow-inner" style={backgroundValue}></div>
-                        <button onClick={() => setIsFullscreen(true)} className="absolute bottom-6 right-6 p-3 bg-white dark:bg-slate-700 rounded-full shadow-lg hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors z-10">
+                    <div className="h-full w-full p-4 md:p-8 flex items-center justify-center bg-slate-100/50 dark:bg-slate-900/50 relative">
+                        <div className="w-full h-full rounded-2xl shadow-inner border border-slate-200/50 dark:border-slate-800" style={backgroundValue}></div>
+                        <button onClick={() => setIsFullscreen(true)} className="absolute bottom-12 right-12 p-3 bg-white dark:bg-slate-700 rounded-full shadow-lg hover:bg-slate-200 dark:hover:bg-slate-600 hover:scale-105 transition-all z-10 cursor-pointer">
                             <FullScreenIcon className="w-6 h-6" />
                         </button>
                     </div>

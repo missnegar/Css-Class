@@ -8,9 +8,11 @@ interface SidebarProps {
   activeToolId: string;
   onSelectTool: (toolId: string) => void;
   isOpen: boolean;
+  favorites?: string[];
+  toggleFavorite?: (toolId: string) => void;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ activeToolId, onSelectTool, isOpen }) => {
+const Sidebar: React.FC<SidebarProps> = ({ activeToolId, onSelectTool, isOpen, favorites = [], toggleFavorite }) => {
     // Open the first "real" category by default
     const [openCategory, setOpenCategory] = useState<string | null>('مولدهای CSS');
     const [searchQuery, setSearchQuery] = useState('');
@@ -20,6 +22,13 @@ const Sidebar: React.FC<SidebarProps> = ({ activeToolId, onSelectTool, isOpen })
     };
 
     const isSearching = searchQuery.trim() !== '';
+
+    // Get favorite tools lists
+    const favoriteTools = favorites.length > 0
+        ? toolCategories
+            .flatMap(cat => cat.tools)
+            .filter(tool => favorites.includes(tool.id) && tool.enabled)
+        : [];
 
     const processedCategories = toolCategories.map(category => {
         const filteredTools = category.tools.filter(tool => 
@@ -61,6 +70,47 @@ const Sidebar: React.FC<SidebarProps> = ({ activeToolId, onSelectTool, isOpen })
 
             <nav className="flex-grow overflow-y-auto pr-1 no-scrollbar">
                 <ul>
+                    {/* Bookmarked / Favorite Tools list */}
+                    {favoriteTools.length > 0 && !isSearching && (
+                        <li className="mb-3 pb-3 border-b border-slate-100 dark:border-slate-800">
+                            <div className="flex items-center gap-1.5 px-2 mb-2 text-[11px] font-bold text-amber-500 dark:text-amber-400 uppercase tracking-wider">
+                                <span>★</span>
+                                <span>ابزارهای نشان‌شده</span>
+                            </div>
+                            <ul className="space-y-1">
+                                {favoriteTools.map(tool => (
+                                    <li key={`fav-${tool.id}`} className="group relative">
+                                        <a 
+                                            href="#" 
+                                            onClick={(e) => {
+                                                e.preventDefault();
+                                                onSelectTool(tool.id);
+                                            }}
+                                            className={`block w-full text-right py-1.5 pl-8 pr-3 mr-2 border-r-2 text-xs transition-all duration-150 whitespace-nowrap flex items-center justify-between
+                                                ${activeToolId === tool.id 
+                                                    ? 'border-amber-500 text-amber-600 dark:text-amber-400 font-semibold bg-amber-500/5' 
+                                                    : 'border-transparent text-slate-600 dark:text-slate-400 hover:text-amber-500 dark:hover:text-amber-400 hover:border-amber-400/50'}`
+                                            }
+                                        >
+                                            <span className="truncate">{tool.name}</span>
+                                        </a>
+                                        <button 
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                e.preventDefault();
+                                                if (toggleFavorite) toggleFavorite(tool.id);
+                                            }}
+                                            className="absolute left-2 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 p-1 text-[10px] text-slate-400 hover:text-rose-500 transition-all cursor-pointer rounded bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 shadow-xs"
+                                            title="حذف نشان"
+                                        >
+                                            ✕
+                                        </button>
+                                    </li>
+                                ))}
+                            </ul>
+                        </li>
+                    )}
+
                     {processedCategories.length === 0 ? (
                         <div className="text-center py-8 text-slate-500 dark:text-slate-400">
                             <p className="text-sm">ابزاری یافت نشد</p>

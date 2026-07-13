@@ -51,7 +51,7 @@ const ResizablePanels: React.FC<ResizablePanelsProps> = ({ children }) => {
 
     return (
         <div ref={containerRef} className="flex h-full w-full">
-            <div style={{ width: `${panel1Size}%` }} className="min-h-0 min-w-0">
+            <div style={{ width: `${panel1Size}%` }} className="h-full min-h-0 min-w-0">
                 {children[0]}
             </div>
             <div
@@ -60,7 +60,7 @@ const ResizablePanels: React.FC<ResizablePanelsProps> = ({ children }) => {
             >
               <div className="bg-slate-300 dark:bg-slate-700 group-hover:bg-indigo-500 transition-colors w-[2px] h-full mx-auto"></div>
             </div>
-            <div className="flex-1 min-h-0 min-w-0">
+            <div className="flex-1 h-full min-h-0 min-w-0">
                  {children[1]}
             </div>
         </div>

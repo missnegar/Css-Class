@@ -75,10 +75,10 @@ const MenuGenerator: React.FC = () => {
     // Desktop state
     const [desktopItems, setDesktopItems] = useState<MenuItem[]>(INITIAL_DESKTOP_ITEMS);
     const [bgColor, setBgColor] = useState('#ffffff');
-    const [textColor, setTextColor] = useState('#334155');
-    const [hoverBgColor, setHoverBgColor] = useState('#f1f5f9');
-    const [hoverTextColor, setHoverTextColor] = useState('#1e293b');
-    const [submenuBgColor, setSubmenuBgColor] = useState('#f8fafc');
+    const [textColor, setTextColor] = useState('#1e293b');
+    const [hoverBgColor, setHoverBgColor] = useState('#4f46e5');
+    const [hoverTextColor, setHoverTextColor] = useState('#ffffff');
+    const [submenuBgColor, setSubmenuBgColor] = useState('#ffffff');
 
     // Mobile state
     const [mobileItems, setMobileItems] = useState<MobileMenuItem[]>(INITIAL_MOBILE_ITEMS);
@@ -333,7 +333,7 @@ ${menuType === 'horizontal' ? `
                             }
                         `}</style>
                         {menuType !== 'mobile' ? (
-                             <div className={`w-64 bg-[var(--menu-bg)] rounded-lg shadow-lg`}>
+                             <div className={`${menuType}-menu w-64 bg-[var(--menu-bg)] rounded-lg shadow-lg overflow-visible`}>
                                 <DesktopMenuPreview items={desktopItems} type={menuType} />
                              </div>
                         ) : (

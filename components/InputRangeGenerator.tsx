@@ -75,20 +75,35 @@ const InputRangeGenerator: React.FC = () => {
   width: 100%;
 }
 
-.custom-range {
+input[type=range].custom-range {
   -webkit-appearance: none;
   appearance: none;
+  width: 100%;
+  background: transparent;
+  outline: none;
+  cursor: pointer;
+}
+
+/* Track styles for Webkit (Chrome, Safari, Edge) */
+input[type=range].custom-range::-webkit-slider-runnable-track {
   width: 100%;
   height: ${trackHeight}px;
   border-radius: ${trackBorderRadius}px;
   ${progressStyle}
-  outline: none;
-  transition: opacity .2s;
-  cursor: pointer;
+  border: none;
 }
 
-/* Thumb Styles */
-.custom-range::-webkit-slider-thumb {
+/* Track styles for Firefox */
+input[type=range].custom-range::-moz-range-track {
+  width: 100%;
+  height: ${trackHeight}px;
+  border-radius: ${trackBorderRadius}px;
+  ${progressStyle}
+  border: none;
+}
+
+/* Thumb styles for Webkit (Chrome, Safari, Edge) */
+input[type=range].custom-range::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
   width: ${thumbSize}px;
@@ -100,7 +115,8 @@ const InputRangeGenerator: React.FC = () => {
   margin-top: ${-(thumbSize - trackHeight) / 2}px; /* Center thumb */
 }
 
-.custom-range::-moz-range-thumb {
+/* Thumb styles for Firefox */
+input[type=range].custom-range::-moz-range-thumb {
   width: ${thumbSize}px;
   height: ${thumbSize}px;
   background: ${thumbBg};
@@ -172,7 +188,7 @@ rangeInput.addEventListener('input', (e) => {
                     <div className="flex-1 p-4 md:p-8 flex items-center justify-center bg-slate-100/50 dark:bg-slate-900/50">
                          <div className="w-full max-w-sm p-8 bg-white dark:bg-slate-800 rounded-lg shadow-md">
                              <style>{generatedCss}</style>
-                             <div className="custom-range-container">
+                             <div className="custom-range-container" dir="ltr">
                                 <input 
                                     type="range" 
                                     min="0" max="100" 

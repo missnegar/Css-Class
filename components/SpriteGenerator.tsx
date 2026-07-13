@@ -195,15 +195,55 @@ ${positions.map(img => `.${baseClass}.${prefix}${img.file.name.split('.')[0].rep
                             </div>
                         ) : (
                             <div className="w-full space-y-6">
+                                <style>{`
+                                  .checkerboard-pattern {
+                                    background-color: #f1f5f9;
+                                    background-image: linear-gradient(45deg, #cbd5e1 25%, transparent 25%), linear-gradient(-45deg, #cbd5e1 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #cbd5e1 75%), linear-gradient(-45deg, transparent 75%, #cbd5e1 75%);
+                                    background-size: 16px 16px;
+                                    background-position: 0 0, 0 8px, 8px -8px, -8px 0px;
+                                  }
+                                  .dark .checkerboard-pattern {
+                                    background-color: #0f172a;
+                                    background-image: linear-gradient(45deg, #334155 25%, transparent 25%), linear-gradient(-45deg, #334155 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #334155 75%), linear-gradient(-45deg, transparent 75%, #334155 75%);
+                                    background-size: 16px 16px;
+                                    background-position: 0 0, 0 8px, 8px -8px, -8px 0px;
+                                  }
+                                `}</style>
                                 <div>
-                                    <h3 className="text-lg font-bold mb-2 text-slate-800 dark:text-slate-100">پیش‌نمایش Sprite Sheet</h3>
-                                    {spriteSheetUrl && <img src={spriteSheetUrl} alt="Generated Sprite Sheet" className="bg-white dark:bg-slate-800 p-2 border rounded-lg shadow-md max-w-full" />}
+                                    <h3 className="text-lg font-bold mb-2 text-slate-800 dark:text-slate-100 text-right">پیش‌نمایش Sprite Sheet</h3>
+                                    {spriteSheetUrl && (
+                                        <div className="checkerboard-pattern p-4 border border-slate-200 dark:border-slate-800 rounded-xl shadow-inner inline-block max-w-full">
+                                            <img src={spriteSheetUrl} alt="Generated Sprite Sheet" className="max-w-full block rounded" />
+                                        </div>
+                                    )}
                                 </div>
                                  <div>
-                                    <h3 className="text-lg font-bold mb-2 text-slate-800 dark:text-slate-100">پیش‌نمایش آیکون‌ها</h3>
-                                    <div className="flex flex-wrap gap-4 p-4 bg-white dark:bg-slate-800 rounded-lg border">
+                                    <h3 className="text-lg font-bold mb-2 text-slate-800 dark:text-slate-100 text-right">آیکون‌های استخراج شده</h3>
+                                    <div className="flex flex-wrap gap-4 p-4 bg-slate-50/50 dark:bg-slate-900/30 rounded-xl border border-slate-100 dark:border-slate-800 justify-start">
                                         {spriteData.map(data => (
-                                            <div key={data.id} title={data.file.name} style={{ width: `${data.width}px`, height: `${data.height}px`, backgroundImage: `url(${spriteSheetUrl})`, backgroundPosition: `-${data.x}px -${data.y}px`}} />
+                                            <div key={data.id} className="flex flex-col items-center bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700/60 rounded-xl p-3 w-28 md:w-32 hover:shadow-md transition-all">
+                                                {/* Icon Checkerboard Frame */}
+                                                <div className="checkerboard-pattern w-20 h-20 rounded-lg flex items-center justify-center border border-slate-200/50 dark:border-slate-700/50 overflow-hidden relative mb-2">
+                                                    <div 
+                                                        title={data.file.name} 
+                                                        style={{ 
+                                                            width: `${data.width}px`, 
+                                                            height: `${data.height}px`, 
+                                                            backgroundImage: `url(${spriteSheetUrl})`, 
+                                                            backgroundPosition: `-${data.x}px -${data.y}px`,
+                                                            backgroundRepeat: 'no-repeat',
+                                                            transform: data.width > 72 || data.height > 72 ? `scale(${72 / Math.max(data.width, data.height)})` : 'none',
+                                                            transformOrigin: 'center center'
+                                                        }} 
+                                                    />
+                                                </div>
+                                                <span className="text-[11px] font-medium text-slate-700 dark:text-slate-300 w-full truncate text-center" title={data.file.name}>
+                                                    {data.file.name}
+                                                </span>
+                                                <span className="text-[9px] font-mono text-slate-400 dark:text-slate-500 mt-1">
+                                                    {data.width} × {data.height} px
+                                                </span>
+                                            </div>
                                         ))}
                                     </div>
                                 </div>
@@ -231,8 +271,28 @@ ${positions.map(img => `.${baseClass}.${prefix}${img.file.name.split('.')[0].rep
                                     <div>
                                         <label className="block text-sm font-medium mb-2">جهت</label>
                                         <div className="flex gap-2 text-sm bg-slate-100 dark:bg-slate-900 p-1 rounded-xl">
-                                            <button onClick={() => setLayout('horizontal')} className={`flex-1 p-2 rounded-md ${layout==='horizontal' ? 'bg-indigo-600 text-white shadow' : ''}`}>افقی</button>
-                                            <button onClick={() => setLayout('vertical')} className={`flex-1 p-2 rounded-md ${layout==='vertical' ? 'bg-indigo-600 text-white shadow' : ''}`}>عمودی</button>
+                                            <button 
+                                                type="button" 
+                                                onClick={() => setLayout('horizontal')} 
+                                                className={`flex-1 py-2 px-3 rounded-lg font-medium text-xs md:text-sm transition-all cursor-pointer ${
+                                                    layout === 'horizontal' 
+                                                        ? 'bg-indigo-600 text-white shadow font-bold' 
+                                                        : 'text-slate-600 dark:text-slate-400 hover:bg-slate-200/50 dark:hover:bg-slate-800/50'
+                                                }`}
+                                            >
+                                                افقی
+                                            </button>
+                                            <button 
+                                                type="button" 
+                                                onClick={() => setLayout('vertical')} 
+                                                className={`flex-1 py-2 px-3 rounded-lg font-medium text-xs md:text-sm transition-all cursor-pointer ${
+                                                    layout === 'vertical' 
+                                                        ? 'bg-indigo-600 text-white shadow font-bold' 
+                                                        : 'text-slate-600 dark:text-slate-400 hover:bg-slate-200/50 dark:hover:bg-slate-800/50'
+                                                }`}
+                                            >
+                                                عمودی
+                                            </button>
                                         </div>
                                     </div>
                                      <label className="block text-sm font-medium">فاصله داخلی ({padding}px)<input type="range" min="0" max="50" value={padding} onChange={e => setPadding(+e.target.value)} className="w-full h-2 accent-indigo-600 mt-1" /></label>

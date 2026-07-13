@@ -42,7 +42,7 @@ const TextRotateGenerator: React.FC = () => {
         <div className="h-full flex flex-col bg-slate-50 dark:bg-slate-900">
             <main className="flex-grow flex min-h-0">
                 <ResizablePanels>
-                    <div className="flex-1 p-4 md:p-8 flex items-center justify-center bg-slate-100/50 dark:bg-slate-900/50">
+                    <div className="h-full w-full p-4 md:p-8 flex items-center justify-center bg-slate-100/50 dark:bg-slate-900/50 overflow-hidden">
                         <div className="text-5xl font-bold text-slate-800 dark:text-slate-200 transition-transform duration-200" style={{ transform: transformValue }}>
                             {text}
                         </div>
