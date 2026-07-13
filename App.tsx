@@ -89,7 +89,7 @@ const App: React.FC = () => {
   const renderActiveTool = () => {
     switch (activeToolId) {
       case 'welcome':
-        return <Welcome />;
+        return <Welcome onSelectTool={handleSelectTool} />;
       case 'shape-former':
         return <ShapeEditor />;
       case 'animated-text-generator':
@@ -219,7 +219,9 @@ const App: React.FC = () => {
       <div className="flex-grow flex flex-row min-h-0 overflow-hidden">
         <Sidebar isOpen={isSidebarOpen} activeToolId={activeToolId} onSelectTool={handleSelectTool} />
         <main className="flex-grow flex flex-col min-w-0 overflow-y-auto no-scrollbar">
-          {renderActiveTool()}
+          <div key={activeToolId} className="h-full w-full flex flex-col animate__animated animate__fadeIn animate__faster">
+            {renderActiveTool()}
+          </div>
         </main>
       </div>
       <Footer />

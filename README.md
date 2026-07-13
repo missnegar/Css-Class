@@ -34,17 +34,6 @@ This project is built with a modern tech stack and focuses on a clean, intuitive
 *   **〰️ Cubic Bezier Generator:** Fine-tune your animation timings with an interactive `cubic-bezier` curve editor. Compare your custom curve against standard timing functions in a live preview.
 *   **🖼️ Image Filter Generator:** Apply and chain multiple CSS filters to images. Includes controls for blur, brightness, contrast, hue-rotate, and more, plus a `drop-shadow` effect. Comes with a gallery of beautiful presets.
 *   **🎚️ Flip Switch Generator:** Design creative and modern toggle switches. Choose from classic, icon-based (like sun/moon), or a 3D flip style with full customization.
-*   **📜 Pattern Generator:** Create beautiful, tileable background patterns using pure CSS. Comes with over 60 presets, and allows full customization of colors, opacity, spacing, sizing, and angles. Supports both solid and gradient colors for stunning effects.
-*   **✒️ Font Tools:** A comprehensive tool to manage fonts. Either link to Google Fonts directly or define your own `@font-face` for custom local fonts.
-*   **🌈 Gradient Generator:** Visually create stunning linear or radial gradients with multiple color stops.
-*   **▦ Grid Generator:** An interactive tool to build complex CSS Grid layouts. Control columns, rows, and gaps visually.
-*   **✍ Highlighter Generator:** Create stylish and modern text highlight effects with solid colors or gradients.
-*   **🎚️ Input Range Generator:** Fully customize the appearance of HTML range sliders (`<input type="range">`), including the track and thumb.
-*   **🏢 Layout Generator:** Quickly scaffold common web page layouts like holy-grail or sidebar layouts using CSS Grid.
-*   **⏳ Loader & Spinner Generator:** A collection of 12 beautiful, single-element, pure-CSS loaders with customization options.
-*   **☰ Menu Generator:** Design vertical, horizontal, and mobile-friendly menus with multiple levels of sub-menus and extensive styling options.
-*   **🎗️ Ribbon Banner Generator:** Create stylish, responsive page banners with various tail styles (angled, forked, straight). Customize text, colors, fonts, and borders.
-*   **🎀 Ribbon (Corner) Generator:** Design beautiful corner ribbons for cards and containers. Customize position, color (solid or gradient), text, and dimensions.
 
 ## 🛠️ Tech Stack
 
