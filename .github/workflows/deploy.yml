@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: 🚚 Get latest code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: 📂 Sync files to Host
       uses: SamKirkland/FTP-Deploy-Action@v4.3.4
@@ -19,4 +19,3 @@ jobs:
         server: 169.63.229.130
         username: ${{ secrets.FTP_USERNAME }}
         password: ${{ secrets.FTP_PASSWORD }}
-        local-dir: ./
