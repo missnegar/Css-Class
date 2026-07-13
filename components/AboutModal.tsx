@@ -40,6 +40,66 @@ const AboutModal: React.FC<AboutModalProps> = ({ isOpen, onClose }) => {
                     </blockquote>
                 </div>
 
+                {/* راه‌های ارتباطی */}
+                <div className="pt-4 border-t border-slate-100 dark:border-slate-700/50 space-y-3">
+                    <p className="font-semibold text-slate-800 dark:text-slate-100 text-sm">راه‌های ارتباطی با من:</p>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+                        <a 
+                            href="https://www.linkedin.com/in/negarkazemnejad/" 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="flex items-center gap-2.5 p-2.5 bg-slate-50 dark:bg-slate-900/40 border border-slate-200/60 dark:border-slate-800/80 rounded-xl hover:border-indigo-500 dark:hover:border-indigo-500 hover:bg-indigo-50/20 dark:hover:bg-slate-800/80 transition-all text-left"
+                            dir="ltr"
+                        >
+                            <span className="text-base">🔗</span>
+                            <div className="flex flex-col">
+                                <span className="text-[10px] text-slate-400 dark:text-slate-500">LinkedIn</span>
+                                <span className="font-semibold text-slate-700 dark:text-slate-200 truncate">negarkazemnejad</span>
+                            </div>
+                        </a>
+
+                        <a 
+                            href="mailto:hi@egar.agency" 
+                            className="flex items-center gap-2.5 p-2.5 bg-slate-50 dark:bg-slate-900/40 border border-slate-200/60 dark:border-slate-800/80 rounded-xl hover:border-indigo-500 dark:hover:border-indigo-500 hover:bg-indigo-50/20 dark:hover:bg-slate-800/80 transition-all text-left"
+                            dir="ltr"
+                        >
+                            <span className="text-base">✉️</span>
+                            <div className="flex flex-col">
+                                <span className="text-[10px] text-slate-400 dark:text-slate-500">Email</span>
+                                <span className="font-semibold text-slate-700 dark:text-slate-200 truncate font-mono">hi@egar.agency</span>
+                            </div>
+                        </a>
+
+                        <a 
+                            href="https://wa.me/905550508425" 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="flex items-center gap-2.5 p-2.5 bg-slate-50 dark:bg-slate-900/40 border border-slate-200/60 dark:border-slate-800/80 rounded-xl hover:border-emerald-500 dark:hover:border-emerald-500 hover:bg-emerald-50/20 dark:hover:bg-slate-800/80 transition-all text-left"
+                            dir="ltr"
+                        >
+                            <span className="text-base">💬</span>
+                            <div className="flex flex-col">
+                                <span className="text-[10px] text-slate-400 dark:text-slate-500">WhatsApp (TR)</span>
+                                <span className="font-semibold text-slate-700 dark:text-slate-200 font-mono">+90 555 050 8425</span>
+                            </div>
+                        </a>
+
+                        <a 
+                            href="https://wa.me/989123447142" 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="flex items-center gap-2.5 p-2.5 bg-slate-50 dark:bg-slate-900/40 border border-slate-200/60 dark:border-slate-800/80 rounded-xl hover:border-emerald-500 dark:hover:border-emerald-500 hover:bg-emerald-50/20 dark:hover:bg-slate-800/80 transition-all text-left"
+                            dir="ltr"
+                        >
+                            <span className="text-base">💬</span>
+                            <div className="flex flex-col">
+                                <span className="text-[10px] text-slate-400 dark:text-slate-500">WhatsApp (IR)</span>
+                                <span className="font-semibold text-slate-700 dark:text-slate-200 font-mono">+98 912 344 7142</span>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+
                 <p>
                     این مسیر ادامه دارد و با همراهی و حمایت شما، کامل‌تر خواهد شد.
                 </p>
