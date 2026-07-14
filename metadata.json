@@ -3,5 +3,5 @@
   "description": "یک ابزار بسیار کاربردی برای فرانت‌اند دولوپرها که میتونه کار طراحی و توسعه اپ رو براشون ساده و حرفه‌ای کنه.این اپ شامل قسمت‌های مختلفی است که میتوانید در اپ خود استفاده کنید.",
   "requestFramePermissions": [],
   "prompt": "",
-  "majorCapabilities": []
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }
