@@ -10,9 +10,10 @@ interface SidebarProps {
   isOpen: boolean;
   favorites?: string[];
   toggleFavorite?: (toolId: string) => void;
+  onClose?: () => void;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ activeToolId, onSelectTool, isOpen, favorites = [], toggleFavorite }) => {
+const Sidebar: React.FC<SidebarProps> = ({ activeToolId, onSelectTool, isOpen, favorites = [], toggleFavorite, onClose }) => {
     // Open the first "real" category by default
     const [openCategory, setOpenCategory] = useState<string | null>('مولدهای CSS');
     const [searchQuery, setSearchQuery] = useState('');
@@ -42,8 +43,33 @@ const Sidebar: React.FC<SidebarProps> = ({ activeToolId, onSelectTool, isOpen, f
     }).filter(category => category.tools.length > 0);
 
     return (
-        <aside className={`transition-all duration-300 ease-in-out bg-white dark:bg-slate-800/50 border-l border-slate-200 dark:border-slate-800 flex flex-col shrink-0 overflow-hidden ${isOpen ? 'w-72 p-4' : 'w-0 p-0 border-l-0'}`}>
-            <h2 className="text-lg font-bold mb-4 text-slate-800 dark:text-slate-100 px-2 whitespace-nowrap">مجموعه ابزارها</h2>
+        <>
+            {/* Backdrop for mobile devices */}
+            {isOpen && (
+                <div 
+                    className="fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-40 md:hidden cursor-pointer"
+                    onClick={onClose}
+                />
+            )}
+            
+            <aside 
+                className={`transition-all duration-300 ease-in-out bg-white dark:bg-slate-800 border-l border-slate-200/80 dark:border-slate-800 flex flex-col shrink-0 overflow-hidden z-50
+                    fixed md:relative top-0 bottom-0 right-0 h-full md:h-auto shadow-2xl md:shadow-none
+                    ${isOpen 
+                        ? 'w-72 p-4 translate-x-0 opacity-100' 
+                        : 'w-0 p-0 border-l-0 translate-x-full md:translate-x-0 md:opacity-100'
+                    }`}
+            >
+                <div className="flex items-center justify-between mb-4 px-2 whitespace-nowrap">
+                    <h2 className="text-lg font-bold text-slate-800 dark:text-slate-100">مجموعه ابزارها</h2>
+                    <button 
+                        onClick={onClose}
+                        className="md:hidden p-1.5 rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+                        aria-label="بستن منو"
+                    >
+                        <XIcon className="w-5 h-5" />
+                    </button>
+                </div>
             
             {/* Search Bar */}
             <div className="relative mb-4 px-2">
@@ -189,6 +215,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activeToolId, onSelectTool, isOpen, f
                 </ul>
             </nav>
         </aside>
+       </>
     );
 };
 

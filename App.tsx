@@ -64,7 +64,12 @@ const App: React.FC = () => {
   const [activeToolId, setActiveToolId] = useState<string>('welcome');
   const [isDonationModalOpen, setIsDonationModalOpen] = useState(false);
   const [isAboutModalOpen, setIsAboutModalOpen] = useState(false);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return window.innerWidth >= 768;
+    }
+    return true;
+  });
 
   // Favorites (Bookmarks) State
   const [favorites, setFavorites] = useState<string[]>(() => {
@@ -143,6 +148,9 @@ const App: React.FC = () => {
 
   const handleSelectTool = (toolId: string) => {
     setActiveToolId(toolId);
+    if (typeof window !== 'undefined' && window.innerWidth < 768) {
+      setIsSidebarOpen(false);
+    }
     if (toolId && toolId !== 'welcome') {
       setRecentTools(prev => {
         const filtered = prev.filter(id => id !== toolId);
@@ -295,6 +303,7 @@ const App: React.FC = () => {
           onSelectTool={handleSelectTool} 
           favorites={favorites}
           toggleFavorite={toggleFavorite}
+          onClose={() => setIsSidebarOpen(false)}
         />
         <main className="flex-grow flex flex-col min-w-0 overflow-y-auto no-scrollbar">
           {/* Breadcrumb Navigation */}

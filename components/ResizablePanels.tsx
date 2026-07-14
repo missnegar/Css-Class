@@ -8,6 +8,16 @@ const ResizablePanels: React.FC<ResizablePanelsProps> = ({ children }) => {
     const [panel1Size, setPanel1Size] = useState(50);
     const containerRef = useRef<HTMLDivElement>(null);
     const [isResizing, setIsResizing] = useState(false);
+    const [isMobile, setIsMobile] = useState(false);
+
+    useEffect(() => {
+        const checkMobile = () => {
+            setIsMobile(window.innerWidth < 768);
+        };
+        checkMobile();
+        window.addEventListener('resize', checkMobile);
+        return () => window.removeEventListener('resize', checkMobile);
+    }, []);
 
     const handleMouseDown = useCallback((e: React.MouseEvent) => {
         e.preventDefault();
@@ -48,6 +58,19 @@ const ResizablePanels: React.FC<ResizablePanelsProps> = ({ children }) => {
             window.removeEventListener('mouseup', handleMouseUpOnWindow);
         };
     }, [isResizing, handleMouseMove, handleMouseUp]);
+
+    if (isMobile) {
+        return (
+            <div className="flex flex-col w-full h-full overflow-y-auto bg-slate-50 dark:bg-slate-900/40">
+                <div className="w-full h-[320px] shrink-0 border-b border-slate-200/80 dark:border-slate-800">
+                    {children[0]}
+                </div>
+                <div className="w-full flex-grow bg-white dark:bg-slate-900">
+                    {children[1]}
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div ref={containerRef} className="flex h-full w-full">
